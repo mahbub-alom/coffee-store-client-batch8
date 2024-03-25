@@ -1,10 +1,34 @@
-import React, { useState } from "react";
-import { useLoaderData } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+// import axios from "axios";
+import React from "react";
+// import React, { useState } from "react";
+// import { useLoaderData } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const Users = () => {
-  const loadedUsers = useLoaderData();
-  const [users, setUsers] = useState(loadedUsers);
+  // const loadedUsers = useLoaderData();
+  // const [users, setUsers] = useState(loadedUsers);
+
+  const {
+    data: users,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["users"],
+    queryFn: async () => {
+      const res = await fetch("http://localhost:5000/users");
+      return res.json();
+    },
+  });
+
+  if (isLoading) {
+    return <span className="loading loading-spinner text-error"></span>;
+  }
+
+  if (isError) {
+    console.log(error.message);
+  }
 
   const handleDelete = (id) => {
     Swal.fire({
@@ -17,13 +41,13 @@ const Users = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`https://coffee-store-server-hc857uldy-md-mahbub-aloms-projects.vercel.app/users/${id}`, {
+        fetch(`http://localhost:5000/users/${id}`, {
           method: "DELETE",
         })
           .then((res) => res.json())
           .then((data) => {
-            const remaining = users.filter((user) => user._id !== id);
-            setUsers(remaining);
+            // const remaining = users.filter((user) => user._id !== id);
+            // setUsers(remaining);
             if (data.deletedCount > 0) {
               Swal.fire({
                 title: "Deleted!",

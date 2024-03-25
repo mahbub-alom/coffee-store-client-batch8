@@ -27,7 +27,7 @@ const UpdateCoffees = () => {
       details,
       photo,
     };
-    fetch(`https://coffee-store-server-hc857uldy-md-mahbub-aloms-projects.vercel.app/coffees/${_id}`, {
+    fetch(`http://localhost:5000/coffees/${_id}`, {
       method: "PUT",
       headers: {
         "content-type": "application/json",

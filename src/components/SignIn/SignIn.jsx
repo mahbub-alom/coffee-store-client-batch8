@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../providers/AuthProvider";
+import axios from "axios";
 
 const SignIn = () => {
   const { loginUser } = useContext(AuthContext);
@@ -10,27 +11,33 @@ const SignIn = () => {
     const form = e.target;
     const email = form.email.value;
     const password = form.password.value;
-    loginUser(email, password)
-      .then((result) => {
-        const user={
-          email,
-          lastLoggedAt:result.user?.metadata?.lastSignInTime
-        }
-        fetch("https://coffee-store-server-hc857uldy-md-mahbub-aloms-projects.vercel.app/users",{
-          method:"PATCH",
-          headers:{
-            "content-type":"application/json"
-          },
-          body:JSON.stringify(user)
-        })
-        .then(res=>res.json())
-        .then(data=>{
-          console.log(data)
-        })
-      })
-      .catch((error) => {
-        console.log(error.message);
+    loginUser(email, password).then((result) => {
+      const user = {
+        email,
+        lastLoggedAt: result.user?.metadata?.lastSignInTime,
+      };
+
+      //axios here
+      axios.patch("http://localhost:5000/users", user).then((data) => {
+        console.log(data.data);
       });
+
+      //normal fetch here
+      // fetch("http://localhost:5000/users",{
+      //   method:"PATCH",
+      //   headers:{
+      //     "content-type":"application/json"
+      //   },
+      //   body:JSON.stringify(user)
+      // })
+      // .then(res=>res.json())
+      // .then(data=>{
+      //   console.log(data)
+      // })
+    });
+    // .catch((error) => {
+    //   console.log(error.message);
+    // });
   };
 
   return (

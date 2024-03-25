@@ -2,6 +2,8 @@ import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../providers/AuthProvider";
 import Swal from "sweetalert2";
+import axios from "axios";
+
 
 const SignUp = () => {
   const { createUser } = useContext(AuthContext);
@@ -11,37 +13,51 @@ const SignUp = () => {
     const form = e.target;
     const email = form.email.value;
     const password = form.password.value;
-    createUser(email, password)
-      .then((result) => {
-        console.log(result.user);
-        const metaData = result.user?.metadata?.creationTime;
-        const user = { email, metaData };
-        fetch(
-          "https://coffee-store-server-hc857uldy-md-mahbub-aloms-projects.vercel.app/users",
-          {
-            method: "POST",
-            headers: {
-              "content-type": "application/json",
-            },
-            body: JSON.stringify(user),
-          }
-        )
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.insertedId) {
-              Swal.fire({
-                position: "center",
-                icon: "success",
-                title: "Your user data has been added",
-                showConfirmButton: false,
-                timer: 1500,
-              });
-            }
+    createUser(email, password).then((result) => {
+      console.log(result.user);
+      const metaData = result.user?.metadata?.creationTime;
+      const user = { email, metaData };
+
+      //axios here
+      axios.post("http://localhost:5000/users", user).then((data) => {
+        if (data.data.insertedId) {
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Your user data has been added",
+            showConfirmButton: false,
+            timer: 1500,
           });
-      })
-      .catch((error) => {
-        console.log(error.message);
+        }
       });
+
+      //normal fetch using
+      // fetch(
+      //   "http://localhost:5000/users",
+      //   {
+      //     method: "POST",
+      //     headers: {
+      //       "content-type": "application/json",
+      //     },
+      //     body: JSON.stringify(user),
+      //   }
+      // )
+      // .then((res) => res.json())
+      // .then((data) => {
+      //   if (data.insertedId) {
+      //     Swal.fire({
+      //       position: "center",
+      //       icon: "success",
+      //       title: "Your user data has been added",
+      //       showConfirmButton: false,
+      //       timer: 1500,
+      //     });
+      //   }
+      // });
+    });
+    // .catch((error) => {
+    //   console.log(error.message);
+    // });
   };
 
   return (

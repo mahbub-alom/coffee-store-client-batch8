@@ -21,7 +21,7 @@ const AddCoffee = () => {
       details,
       photo,
     };
-    fetch("https://coffee-store-server-hc857uldy-md-mahbub-aloms-projects.vercel.app/coffees", {
+    fetch("http://localhost:5000/coffees", {
       
       method: "POST",
       headers: {
